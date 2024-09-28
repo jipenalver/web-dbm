@@ -3,7 +3,7 @@ import { requiredValidator, emailValidator } from '@/utils/validators'
 import { ref } from 'vue'
 
 const formDataDefault = {
-  username: '',
+  email: '',
   password: ''
 }
 
@@ -29,9 +29,9 @@ const onFormSubmit = () => {
     <v-row>
       <v-col cols="12">
         <v-text-field
-          v-model="formData.username"
+          v-model="formData.email"
           :rules="[requiredValidator, emailValidator]"
-          label="Username"
+          label="Email Address"
           variant="outlined"
         />
       </v-col>
@@ -47,6 +47,15 @@ const onFormSubmit = () => {
       </v-col>
     </v-row>
 
-    <v-btn class="mt-2" type="submit" color="grey-darken-3" variant="elevated" block>Submit</v-btn>
+    <v-btn
+      class="mt-2 font-weight-bold"
+      type="submit"
+      color="grey-darken-3"
+      prepend-icon="mdi-login"
+      size="large"
+      block
+    >
+      Login
+    </v-btn>
   </v-form>
 </template>
