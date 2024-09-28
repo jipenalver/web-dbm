@@ -40,7 +40,9 @@ const { mobile } = useDisplay()
 
               <h3 class="text-center mt-5">
                 Don't have Account?
-                <RouterLink class="text-grey-darken-4" to="/register"> Register Here </RouterLink>
+                <RouterLink class="font-weight-bold text-primary" to="/register">
+                  Register Here
+                </RouterLink>
               </h3>
             </v-card-text>
           </v-card>

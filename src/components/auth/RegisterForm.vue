@@ -1,4 +1,5 @@
 <script setup>
+import { formActionDefault } from '@/utils/formUtils'
 import { supabase } from '@/utils/supabase'
 import {
   requiredValidator,
@@ -20,9 +21,16 @@ const formData = ref({
   ...formDataDefault
 })
 
+const formAction = ref({
+  ...formActionDefault
+})
+
 const refVForm = ref()
 
 const onSubmit = async () => {
+  formAction.value = { ...formActionDefault }
+  formAction.value.formProcess = true
+
   const { data, error } = await supabase.auth.signUp({
     email: formData.value.email,
     password: formData.value.password,
@@ -30,12 +38,22 @@ const onSubmit = async () => {
       data: {
         firstname: formData.value.firstname,
         lastname: formData.value.lastname
+        // is_admin: true
       }
     }
   })
 
-  console.log(data)
-  console.error(error)
+  if (error) {
+    formAction.value.formStatus = error.status
+    formAction.value.formErrorMessage = error.message
+  }
+
+  if (data) {
+    formAction.value.formSuccessMessage = 'Successfully Registered Account.'
+  }
+
+  formAction.value.formProcess = false
+  refVForm.value?.reset()
 }
 
 const onFormSubmit = () => {
@@ -46,6 +64,29 @@ const onFormSubmit = () => {
 </script>
 
 <template>
+  <v-row>
+    <v-col cols="12" v-if="formAction.formSuccessMessage">
+      <v-alert
+        class="mb-5"
+        :text="formAction.formSuccessMessage"
+        title="Success"
+        type="success"
+        variant="tonal"
+        closable
+      ></v-alert>
+    </v-col>
+    <v-col cols="12" v-if="formAction.formErrorMessage">
+      <v-alert
+        class="mb-5"
+        :text="formAction.formErrorMessage"
+        title="Ooops!"
+        type="error"
+        variant="tonal"
+        closable
+      ></v-alert>
+    </v-col>
+  </v-row>
+
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row>
       <v-col cols="12" md="6">
@@ -105,6 +146,8 @@ const onFormSubmit = () => {
       color="grey-darken-3"
       prepend-icon="mdi-account-plus"
       size="large"
+      :loading="formAction.formProcess"
+      :disabled="formAction.formProcess"
       block
     >
       Register
