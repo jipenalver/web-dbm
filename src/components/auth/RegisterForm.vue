@@ -1,13 +1,21 @@
 <script setup>
 import AlertNotification from '@/components/common/AlertNotification.vue'
 import { formActionDefault } from '@/utils/formUtils'
-import { supabase, storeUserData } from '@/utils/supabase'
-import { requiredValidator, emailValidator } from '@/utils/validators'
+import { supabase } from '@/utils/supabase'
+import {
+  requiredValidator,
+  emailValidator,
+  passwordValidator,
+  confirmedValidator
+} from '@/utils/validators'
 import { ref } from 'vue'
 
 const formDataDefault = {
+  firstname: '',
+  lastname: '',
   email: '',
-  password: ''
+  password: '',
+  password_confirmation: ''
 }
 
 const formData = ref({
@@ -22,17 +30,23 @@ const onSubmit = async () => {
   formAction.value = { ...formActionDefault }
   formAction.value.formProcess = true
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signUp({
     email: formData.value.email,
-    password: formData.value.password
+    password: formData.value.password,
+    options: {
+      data: {
+        firstname: formData.value.firstname,
+        lastname: formData.value.lastname
+        // is_admin: true
+      }
+    }
   })
 
   if (error) {
     formAction.value.formStatus = error.status
     formAction.value.formErrorMessage = error.message
   } else if (data) {
-    formAction.value.formSuccessMessage = 'Login Successful.'
-    storeUserData(data)
+    formAction.value.formSuccessMessage = 'Successfully Registered Account.'
   }
 
   formAction.value.formProcess = false
@@ -54,6 +68,24 @@ const onFormSubmit = () => {
 
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row>
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="formData.firstname"
+          :rules="[requiredValidator]"
+          label="Firstname"
+          variant="outlined"
+        />
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="formData.lastname"
+          :rules="[requiredValidator]"
+          label="Lastname"
+          variant="outlined"
+        />
+      </v-col>
+
       <v-col cols="12">
         <v-text-field
           v-model="formData.email"
@@ -63,11 +95,24 @@ const onFormSubmit = () => {
         />
       </v-col>
 
-      <v-col cols="12">
+      <v-col cols="12" md="6">
         <v-text-field
           v-model="formData.password"
-          :rules="[requiredValidator]"
+          :rules="[requiredValidator, passwordValidator]"
           label="Password"
+          type="password"
+          variant="outlined"
+        />
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="formData.password_confirmation"
+          :rules="[
+            requiredValidator,
+            confirmedValidator(formData.password_confirmation, formData.password)
+          ]"
+          label="Password Confirmation"
           type="password"
           variant="outlined"
         />
@@ -78,11 +123,13 @@ const onFormSubmit = () => {
       class="mt-2 font-weight-bold"
       type="submit"
       color="grey-darken-3"
-      prepend-icon="mdi-login"
+      prepend-icon="mdi-account-plus"
       size="large"
+      :loading="formAction.formProcess"
+      :disabled="formAction.formProcess"
       block
     >
-      Login
+      Register
     </v-btn>
   </v-form>
 </template>

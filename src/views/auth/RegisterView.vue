@@ -1,7 +1,7 @@
 <script setup>
 import { useDisplay } from 'vuetify'
 import AppLayout from '@/components/auth/layout/AppLayout.vue'
-import LoginForm from '@/components/auth/LoginForm.vue'
+import RegisterForm from '@/components/auth/RegisterForm.vue'
 
 const { mobile } = useDisplay()
 </script>
@@ -19,7 +19,7 @@ const { mobile } = useDisplay()
 
                 <v-divider />
 
-                <h2>Login</h2>
+                <h2>Sign-up</h2>
               </div>
             </template>
 
@@ -34,14 +34,14 @@ const { mobile } = useDisplay()
 
               <v-divider class="mb-5" />
 
-              <LoginForm />
+              <RegisterForm />
 
               <v-divider class="my-5" />
 
-              <h3 class="text-center mt-5">
-                Don't have Account?
-                <RouterLink class="font-weight-bold text-primary" to="/register">
-                  Register Here
+              <h3 class="text-center">
+                Already have Account?
+                <RouterLink class="font-weight-bold text-primary" to="/">
+                  Click here to Login
                 </RouterLink>
               </h3>
             </v-card-text>
