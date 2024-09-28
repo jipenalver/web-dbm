@@ -1,4 +1,5 @@
 <script setup>
+import AlertNotification from '@/components/common/AlertNotification.vue'
 import { formActionDefault } from '@/utils/formUtils'
 import { supabase } from '@/utils/supabase'
 import {
@@ -20,11 +21,9 @@ const formDataDefault = {
 const formData = ref({
   ...formDataDefault
 })
-
 const formAction = ref({
   ...formActionDefault
 })
-
 const refVForm = ref()
 
 const onSubmit = async () => {
@@ -46,9 +45,7 @@ const onSubmit = async () => {
   if (error) {
     formAction.value.formStatus = error.status
     formAction.value.formErrorMessage = error.message
-  }
-
-  if (data) {
+  } else if (data) {
     formAction.value.formSuccessMessage = 'Successfully Registered Account.'
   }
 
@@ -64,28 +61,10 @@ const onFormSubmit = () => {
 </script>
 
 <template>
-  <v-row>
-    <v-col cols="12" v-if="formAction.formSuccessMessage">
-      <v-alert
-        class="mb-5"
-        :text="formAction.formSuccessMessage"
-        title="Success"
-        type="success"
-        variant="tonal"
-        closable
-      ></v-alert>
-    </v-col>
-    <v-col cols="12" v-if="formAction.formErrorMessage">
-      <v-alert
-        class="mb-5"
-        :text="formAction.formErrorMessage"
-        title="Ooops!"
-        type="error"
-        variant="tonal"
-        closable
-      ></v-alert>
-    </v-col>
-  </v-row>
+  <AlertNotification
+    :form-success-message="formAction.formSuccessMessage"
+    :form-error-message="formAction.formErrorMessage"
+  />
 
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row>
