@@ -1,6 +1,6 @@
 <script setup>
 import { useDisplay } from 'vuetify'
-import AppLayout from '@/components/auth/layout/AppLayout.vue'
+import AppLayout from '@/components/layout/AppLayout.vue'
 import RegisterForm from '@/components/auth/RegisterForm.vue'
 
 const { mobile } = useDisplay()

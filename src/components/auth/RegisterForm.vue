@@ -124,7 +124,6 @@ const onFormSubmit = () => {
       type="submit"
       color="grey-darken-3"
       prepend-icon="mdi-account-plus"
-      size="large"
       :loading="formAction.formProcess"
       :disabled="formAction.formProcess"
       block
