@@ -11,7 +11,10 @@ function onClick() {
 <template>
   <v-responsive class="border rounded">
     <v-app :theme="theme">
-      <v-app-bar class="px-3">
+      <v-app-bar
+        class="px-3 d-flex justify-space-between"
+        :class="theme === 'light' ? 'bg-grey-lighten-2' : ''"
+      >
         <v-spacer></v-spacer>
 
         <v-btn
@@ -27,7 +30,9 @@ function onClick() {
         </v-container>
       </v-main>
 
-      <v-footer border> 2024 — Department of Budget and Management </v-footer>
+      <v-footer :class="theme === 'light' ? 'bg-grey-lighten-2' : ''" border>
+        2024 — Department of Budget and Management
+      </v-footer>
     </v-app>
   </v-responsive>
 </template>

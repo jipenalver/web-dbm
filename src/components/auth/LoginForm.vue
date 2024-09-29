@@ -80,6 +80,8 @@ const onFormSubmit = () => {
       color="grey-darken-3"
       prepend-icon="mdi-login"
       size="large"
+      :loading="formAction.formProcess"
+      :disabled="formAction.formProcess"
       block
     >
       Login

@@ -10,7 +10,14 @@ const { mobile } = useDisplay()
   <AppLayout>
     <template #content>
       <v-row>
-        <v-col cols="12" lg="7"> </v-col>
+        <v-col cols="12" lg="7" class="d-flex align-center">
+          <v-img
+            v-if="!mobile"
+            aspect-ratio="16/9"
+            height="600"
+            src="/images/banner-dbm-caraga.jpg"
+          ></v-img>
+        </v-col>
         <v-col cols="12" lg="5">
           <v-card class="mx-auto" variant="tonal">
             <template #title>
