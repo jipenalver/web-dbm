@@ -35,7 +35,7 @@ const onSubmit = async () => {
     formAction.value.formErrorMessage = error.message
   } else if (data) {
     formAction.value.formSuccessMessage = 'Login Successful.'
-    router.replace('/dashboard')
+    router.replace('/system/dashboard')
   }
 
   formAction.value.formProcess = false

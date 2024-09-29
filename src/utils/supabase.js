@@ -12,3 +12,17 @@ export const supabase = createClient(
 // MAIL_PASSWORD=NRFCCApp1@
 // MAIL_FROM_ADDRESS="noreply@familycourtcorner.com"
 // MAIL_FROM_NAME="Name of your App"
+
+export const isAuthenticated = async () => {
+  const {
+    data: { session },
+    error
+  } = await supabase.auth.getSession()
+
+  if (error) {
+    console.error('Error fetching session:', error)
+    return false
+  }
+
+  return !!session
+}
