@@ -12,11 +12,3 @@ export const supabase = createClient(
 // MAIL_PASSWORD=NRFCCApp1@
 // MAIL_FROM_ADDRESS="noreply@familycourtcorner.com"
 // MAIL_FROM_NAME="Name of your App"
-
-export const storeUserData = (data) => {
-  localStorage.setItem('userData', JSON.stringify(data))
-}
-
-export const getUserData = () => {
-  return JSON.parse(localStorage.getItem('userData') || 'null')
-}

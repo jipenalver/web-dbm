@@ -4,6 +4,13 @@ import { ref } from 'vue'
 
 const emit = defineEmits(['isDrawn'])
 
+const props = defineProps({
+  isWithIcon: {
+    type: Boolean,
+    default: true
+  }
+})
+
 const { mobile } = useDisplay()
 const theme = ref('light')
 
@@ -22,6 +29,7 @@ function onClick() {
           :class="theme === 'light' ? 'bg-grey-lighten-2' : ''"
         >
           <v-app-bar-nav-icon
+            v-if="props.isWithIcon"
             icon="mdi-menu"
             variant="tonal"
             :theme="theme"

@@ -1,7 +1,7 @@
 <script setup>
 import AlertNotification from '@/components/common/AlertNotification.vue'
 import { formActionDefault } from '@/utils/formUtils'
-import { supabase, storeUserData } from '@/utils/supabase'
+import { supabase } from '@/utils/supabase'
 import { requiredValidator, emailValidator } from '@/utils/validators'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -35,7 +35,6 @@ const onSubmit = async () => {
     formAction.value.formErrorMessage = error.message
   } else if (data) {
     formAction.value.formSuccessMessage = 'Login Successful.'
-    storeUserData(data)
     router.replace('/dashboard')
   }
 

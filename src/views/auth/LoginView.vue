@@ -7,7 +7,7 @@ const { mobile } = useDisplay()
 </script>
 
 <template>
-  <AppLayout>
+  <AppLayout :is-with-icon="false">
     <template #content>
       <v-row>
         <v-col cols="12" lg="8" class="d-flex align-center">
