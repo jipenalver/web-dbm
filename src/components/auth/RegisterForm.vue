@@ -9,6 +9,9 @@ import {
   confirmedValidator
 } from '@/utils/validators'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const formDataDefault = {
   firstname: '',
@@ -36,8 +39,8 @@ const onSubmit = async () => {
     options: {
       data: {
         firstname: formData.value.firstname,
-        lastname: formData.value.lastname
-        // is_admin: true
+        lastname: formData.value.lastname,
+        is_admin: false
       }
     }
   })
@@ -47,6 +50,7 @@ const onSubmit = async () => {
     formAction.value.formErrorMessage = error.message
   } else if (data) {
     formAction.value.formSuccessMessage = 'Successfully Registered Account.'
+    router.replace('/system/dashboard')
   }
 
   formAction.value.formProcess = false
