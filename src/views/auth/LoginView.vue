@@ -22,7 +22,7 @@ const { mobile } = useDisplay()
           <v-card class="mx-auto" variant="tonal">
             <template #title>
               <div class="text-center">
-                <h1 class="font-weight-black">DBM | HRMS</h1>
+                <h1 class="font-weight-black">DBM | HR-PMS</h1>
 
                 <v-divider />
 
