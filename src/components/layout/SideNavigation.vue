@@ -76,7 +76,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-navigation-drawer v-model="isDrawn" :temporary="mobile" :permanent="!mobile" width="350">
+  <v-navigation-drawer
+    v-model="isDrawn"
+    :temporary="mobile"
+    :permanent="!mobile"
+    width="350"
+    theme="light"
+    image="/images/nav-dbm-caraga.png"
+  >
     <v-list density="compact" nav>
       <v-list-item
         prepend-icon="mdi-view-dashboard"
