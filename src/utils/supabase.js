@@ -6,13 +6,7 @@ export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY
 )
 
-// MAIL_HOST=smtp.office365.com
-// MAIL_PORT=587
-// MAIL_USERNAME=noreply@familycourtcorner.com
-// MAIL_PASSWORD=NRFCCApp1@
-// MAIL_FROM_ADDRESS="noreply@familycourtcorner.com"
-// MAIL_FROM_NAME="Name of your App"
-
+// Check authentication
 export const isAuthenticated = async () => {
   const {
     data: { session },
@@ -25,4 +19,12 @@ export const isAuthenticated = async () => {
   }
 
   return !!session
+}
+
+// Form action utils
+export const formActionDefault = {
+  formStatus: 0,
+  formProcess: false,
+  formSuccessMessage: '',
+  formErrorMessage: ''
 }
