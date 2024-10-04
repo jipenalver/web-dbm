@@ -1,7 +1,6 @@
 <script setup>
 import AlertNotification from '@/components/common/AlertNotification.vue'
-import { formActionDefault } from '@/utils/formUtils'
-import { supabase } from '@/utils/supabase'
+import { supabase, formActionDefault } from '@/utils/supabase'
 import {
   requiredValidator,
   emailValidator,
