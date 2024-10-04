@@ -1,6 +1,5 @@
 <script setup>
-import { formActionDefault } from '@/utils/formUtils'
-import { supabase } from '@/utils/supabase'
+import { supabase, formActionDefault } from '@/utils/supabase'
 import { useDisplay } from 'vuetify'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
