@@ -1,26 +1,38 @@
 <script setup>
+import ProfileHeaderNavigation from './ProfileHeaderNavigation.vue'
+import { isAuthenticated } from '@/utils/supabase'
 import { useDisplay } from 'vuetify'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
-const emit = defineEmits(['isDrawn'])
+const props = defineProps(['isWithAppBarNavIcon'])
 
-const props = defineProps({
-  isWithIcon: {
-    type: Boolean,
-    default: true
-  }
-})
+const emit = defineEmits(['isDrawerVisible'])
 
-const { mobile } = useDisplay()
-const theme = ref('light')
+// Utilize pre-defined vue functions
+const { xs, sm, mobile } = useDisplay()
 
-function onClick() {
+// Load Variables
+const isLoggedIn = ref(false)
+const theme = ref(localStorage.getItem('theme') ?? 'light')
+
+//  Toggle Theme
+const onToggleTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
+  localStorage.setItem('theme', theme.value)
 }
+// Get Authentication status from supabase
+const getLoggedStatus = async () => {
+  isLoggedIn.value = await isAuthenticated()
+}
+
+// Load Functions during component rendering
+onMounted(() => {
+  getLoggedStatus()
+})
 </script>
 
 <template>
-  <v-responsive class="border rounded">
+  <v-responsive class="rounded">
     <v-app :theme="theme">
       <v-layout>
         <v-app-bar
@@ -29,38 +41,47 @@ function onClick() {
           :class="theme === 'light' ? 'bg-grey-lighten-2' : ''"
         >
           <v-app-bar-nav-icon
-            v-if="props.isWithIcon"
+            v-if="props.isWithAppBarNavIcon"
             icon="mdi-menu"
             variant="tonal"
             :theme="theme"
-            @click.stop="emit('isDrawn')"
+            @click="emit('isDrawerVisible')"
           >
           </v-app-bar-nav-icon>
 
-          <v-img src="/images/header-dbm.png"></v-img>
+          <v-app-bar-title>
+            <v-img src="/images/header-dbm.png" :width="xs ? '100%' : sm ? '40%' : '40%'"></v-img>
+          </v-app-bar-title>
 
-          <v-spacer v-if="!mobile"></v-spacer>
-          <v-spacer v-if="!mobile"></v-spacer>
-          <v-spacer v-if="!mobile"></v-spacer>
+          <v-spacer></v-spacer>
 
           <v-btn
+            class="me-2"
             variant="elevated"
             :icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
             slim
-            @click="onClick"
+            @click="onToggleTheme"
           ></v-btn>
+
+          <ProfileHeaderNavigation v-if="isLoggedIn"></ProfileHeaderNavigation>
         </v-app-bar>
 
         <slot name="navigation"></slot>
 
         <v-main>
-          <v-container>
-            <slot name="content"></slot>
-          </v-container>
+          <slot name="content"></slot>
         </v-main>
 
-        <v-footer :class="theme === 'light' ? 'bg-grey-lighten-2' : ''" border app>
-          2024 — Department of Budget and Management
+        <v-footer
+          class="font-weight-bold"
+          :class="mobile ? 'text-caption' : ''"
+          :color="theme === 'light' ? 'grey-lighten-2' : undefined"
+          border
+          app
+        >
+          <div :class="mobile ? 'w-100 text-center' : ''">
+            Copyright © 2024 - Department of Budget and Management | All Rights Reserved
+          </div>
         </v-footer>
       </v-layout>
     </v-app>
