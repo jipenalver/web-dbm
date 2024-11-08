@@ -30,6 +30,7 @@ export const requiredValidator = (value) => {
 // 👉 Email Validator
 export const emailValidator = (value) => {
   if (isEmpty(value)) return true
+
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   if (Array.isArray(value))
@@ -48,7 +49,7 @@ export const passwordValidator = (password) => {
   return (
     // eslint-disable-next-line operator-linebreak
     validPassword ||
-    'Your password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.'
+    'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.'
   )
 }
 
@@ -69,6 +70,7 @@ export const betweenValidator = (value, min, max) => {
 // 👉 Integer Validator
 export const integerValidator = (value) => {
   if (isEmpty(value)) return true
+
   if (Array.isArray(value))
     return value.every((val) => /^-?[0-9]+$/.test(String(val))) || 'This field must be a number'
 
@@ -78,13 +80,13 @@ export const integerValidator = (value) => {
 // 👉 Regex Validator
 export const regexValidator = (value, regex) => {
   if (isEmpty(value)) return true
+
   let regeX = regex
   if (typeof regeX === 'string') regeX = new RegExp(regeX)
+
   if (Array.isArray(value)) return value.every((val) => regexValidator(val, regeX))
 
-  return (
-    regeX.test(String(value)) || "Your input doesn't match the expected format. Please try again."
-  )
+  return regeX.test(String(value)) || "The input doesn't match the expected format"
 }
 
 // 👉 Alpha Validator
@@ -97,6 +99,7 @@ export const alphaValidator = (value) => {
 // 👉 URL Validator
 export const urlValidator = (value) => {
   if (isEmpty(value)) return true
+
   const re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}[.]{0,1}/
 
   return re.test(String(value)) || 'URL is invalid'
@@ -115,10 +118,18 @@ export const lengthValidator = (value, length) => {
 // 👉 Alpha-dash Validator
 export const alphaDashValidator = (value) => {
   if (isEmpty(value)) return true
+
   const valueAsString = String(value)
 
   return (
     /^[0-9A-Z_-]*$/i.test(valueAsString) ||
-    'Your input must be alphanumeric and can only include dashes (-) and underscores (_).'
+    'The input must be alphanumeric and can only include dashes (-) and underscores (_).'
   )
+}
+
+// 👉 Image Validator
+export const imageValidator = (value) => {
+  if (isEmpty(value)) return true
+
+  return !value || !value.length || value[0].size < 2000000 || 'Image size should be less than 2 MB'
 }

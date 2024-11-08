@@ -5,13 +5,14 @@ import { requiredValidator, emailValidator } from '@/utils/validators'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+// Utilize pre-defined vue functions
 const router = useRouter()
 
+// Load Variables
 const formDataDefault = {
   email: '',
   password: ''
 }
-
 const formData = ref({
   ...formDataDefault
 })
@@ -19,10 +20,11 @@ const formAction = ref({
   ...formActionDefault
 })
 const refVForm = ref()
+const isPasswordVisible = ref(false)
 
 const onSubmit = async () => {
-  formAction.value = { ...formActionDefault }
-  formAction.value.formProcess = true
+  // Reset Form Action utils; Turn on processing at the same time
+  formAction.value = { ...formActionDefault, formProcess: true }
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: formData.value.email,
@@ -30,15 +32,20 @@ const onSubmit = async () => {
   })
 
   if (error) {
+    // Add Error Message and Status Code
     formAction.value.formStatus = error.status
     formAction.value.formErrorMessage = error.message
   } else if (data) {
-    formAction.value.formSuccessMessage = 'Login Successful.'
-    router.replace('/system/dashboard')
+    // Add Success Message
+    formAction.value.formSuccessMessage = 'Successfully Logged Account.'
+    // Redirect Acct to Dashboard
+    router.replace('/dashboard')
   }
 
-  formAction.value.formProcess = false
+  // Reset Form
   refVForm.value?.reset()
+  // Turn off processing
+  formAction.value.formProcess = false
 }
 
 const onFormSubmit = () => {
@@ -55,11 +62,12 @@ const onFormSubmit = () => {
   />
 
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
         <v-text-field
           v-model="formData.email"
           :rules="[requiredValidator, emailValidator]"
+          prepend-inner-icon="mdi-email-outline"
           label="Email Address"
           variant="outlined"
         />
@@ -69,8 +77,11 @@ const onFormSubmit = () => {
         <v-text-field
           v-model="formData.password"
           :rules="[requiredValidator]"
+          prepend-inner-icon="mdi-lock-outline"
           label="Password"
-          type="password"
+          :type="isPasswordVisible ? 'text' : 'password'"
+          :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+          @click:append-inner="isPasswordVisible = !isPasswordVisible"
           variant="outlined"
         />
       </v-col>
