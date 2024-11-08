@@ -86,7 +86,7 @@ onMounted(async () => {
               <v-tooltip activator="parent" location="top">Edit Role</v-tooltip>
             </v-btn>
             <v-btn variant="text" density="comfortable" @click="onDelete(item.id)" icon>
-              <v-icon icon="mdi-tag-remove" color="grey-darken-3"> </v-icon>
+              <v-icon icon="mdi-tag-remove" color="red-darken-4"> </v-icon>
               <v-tooltip activator="parent" location="top">Delete Role</v-tooltip>
             </v-btn>
           </div>
@@ -97,7 +97,7 @@ onMounted(async () => {
     <v-col cols="12" md="4">
       <v-card>
         <v-card-title class="mt-3 d-flex justify-end">
-          <v-btn prepend-icon="mdi-tag-plus" color="grey-darken-3" @click="onAdd"> Add Role </v-btn>
+          <v-btn prepend-icon="mdi-tag-plus" color="red-darken-4" @click="onAdd"> Add Role </v-btn>
         </v-card-title>
         <v-card-text class="mt-2 mb-1 text-end"> Add Role if it doesn't exist. </v-card-text>
       </v-card>
