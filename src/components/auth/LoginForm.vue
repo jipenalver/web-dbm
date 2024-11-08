@@ -69,7 +69,6 @@ const onFormSubmit = () => {
           :rules="[requiredValidator, emailValidator]"
           prepend-inner-icon="mdi-email-outline"
           label="Email Address"
-          variant="outlined"
         />
       </v-col>
 
@@ -82,7 +81,6 @@ const onFormSubmit = () => {
           :type="isPasswordVisible ? 'text' : 'password'"
           :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
           @click:append-inner="isPasswordVisible = !isPasswordVisible"
-          variant="outlined"
         />
       </v-col>
     </v-row>
@@ -90,7 +88,7 @@ const onFormSubmit = () => {
     <v-btn
       class="mt-2 font-weight-bold"
       type="submit"
-      color="grey-darken-3"
+      color="red-darken-4"
       prepend-icon="mdi-login"
       :loading="formAction.formProcess"
       :disabled="formAction.formProcess"
