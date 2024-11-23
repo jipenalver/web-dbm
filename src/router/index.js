@@ -1,7 +1,6 @@
 import { useAuthUserStore } from '@/stores/authUser'
 import { createRouter, createWebHistory } from 'vue-router'
-import { isAuthenticated } from '@/utils/supabase'
-import { routes } from './routesPath'
+import { routes } from './routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,7 +11,7 @@ router.beforeEach(async (to) => {
   // Use Pinia Store
   const authStore = useAuthUserStore()
   // Load if user is logged in
-  const isLoggedIn = await isAuthenticated()
+  const isLoggedIn = await authStore.isAuthenticated()
 
   // Redirect to appropriate page if accessing home route
   if (to.name === 'home') {
@@ -34,16 +33,22 @@ router.beforeEach(async (to) => {
   // Check if the user is logged in
   if (isLoggedIn) {
     // Load user data if not already done
-    if (!authStore.userData) {
-      await authStore.getUserInformation()
-    }
+    if (!authStore.userData) await authStore.getUserInformation()
 
     // Get the user role
-    const isAdmin = authStore.userData.is_admin
+    const isSuperAdmin = authStore.userRole === 'Super Administrator'
 
-    // Restrict access to admin-only routes
-    if (!isAdmin && to.meta.requiresAdmin) {
-      return { name: 'forbidden' }
+    // Load if not super admin
+    if (!isSuperAdmin) {
+      if (authStore.authPages.length == 0) await authStore.getAuthPages(authStore.userRole)
+
+      // Check page that is going to if it is in role pages
+      const isAccessible = authStore.authPages.includes(to.path)
+
+      // Forbid access if not in role pages and if page is not default page
+      if (!isAccessible && !to.meta.isDefault) {
+        return { name: 'forbidden' }
+      }
     }
   }
 })

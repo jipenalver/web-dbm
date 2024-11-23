@@ -1,6 +1,6 @@
 <script setup>
 import AlertNotification from '@/components/common/AlertNotification.vue'
-import { supabase, formActionDefault } from '@/utils/supabase'
+import { formActionDefault, supabase } from '@/utils/supabase'
 import { requiredValidator, emailValidator } from '@/utils/validators'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -49,8 +49,8 @@ const onSubmit = async () => {
 }
 
 const onFormSubmit = () => {
-  refVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid) onSubmit()
+  refVForm.value?.validate().then(({ valid }) => {
+    if (valid) onSubmit()
   })
 }
 </script>
@@ -59,41 +59,39 @@ const onFormSubmit = () => {
   <AlertNotification
     :form-success-message="formAction.formSuccessMessage"
     :form-error-message="formAction.formErrorMessage"
-  />
+  ></AlertNotification>
 
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row dense>
       <v-col cols="12">
         <v-text-field
           v-model="formData.email"
-          :rules="[requiredValidator, emailValidator]"
+          label="Email"
           prepend-inner-icon="mdi-email-outline"
-          label="Email Address"
-          variant="outlined"
-        />
+          :rules="[requiredValidator, emailValidator]"
+        ></v-text-field>
       </v-col>
 
       <v-col cols="12">
         <v-text-field
           v-model="formData.password"
-          :rules="[requiredValidator]"
           prepend-inner-icon="mdi-lock-outline"
           label="Password"
           :type="isPasswordVisible ? 'text' : 'password'"
           :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
           @click:append-inner="isPasswordVisible = !isPasswordVisible"
-          variant="outlined"
-        />
+          :rules="[requiredValidator]"
+        ></v-text-field>
       </v-col>
     </v-row>
 
     <v-btn
       class="mt-2 font-weight-bold"
       type="submit"
-      color="grey-darken-3"
+      color="red-darken-4"
       prepend-icon="mdi-login"
-      :loading="formAction.formProcess"
       :disabled="formAction.formProcess"
+      :loading="formAction.formProcess"
       block
     >
       Login

@@ -1,8 +1,11 @@
 <script setup>
-import { isAuthenticated } from '@/utils/supabase'
+import { useAuthUserStore } from '@/stores/authUser'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import SideNavigation from '@/components/layout/navigation/SideNavigation.vue'
 import { onMounted, ref } from 'vue'
+
+// Use Pinia Store
+const authStore = useAuthUserStore()
 
 // Load Variables
 const isLoggedIn = ref(false)
@@ -10,7 +13,7 @@ const isDrawerVisible = ref(true)
 
 // Get Authentication status from supabase
 const getLoggedStatus = async () => {
-  isLoggedIn.value = await isAuthenticated()
+  isLoggedIn.value = await authStore.isAuthenticated()
 }
 
 // Load Functions during component rendering
@@ -32,14 +35,14 @@ onMounted(() => {
       <v-container>
         <v-row>
           <v-col class="mx-auto mt-16 text-center" cols="12" lg="4">
-            <h1 class="text-h1 font-weight-black text-grey-darken-3">403</h1>
+            <h1 class="text-h1 font-weight-black text-red-darken-4">403</h1>
             <h2 class="text-h2 font-weight-black mb-2">Forbidden</h2>
 
             <p class="text-subtitle-1 font-weight-bold mb-4">
               You dont have permission to access this page.
             </p>
 
-            <v-btn class="mt-2" color="grey-darken-3" prepend-icon="mdi-home" to="/">
+            <v-btn class="mt-2" color="red-darken-4" prepend-icon="mdi-home" to="/">
               Back to {{ isLoggedIn ? 'Dashboard' : 'Homepage' }}
             </v-btn>
           </v-col>

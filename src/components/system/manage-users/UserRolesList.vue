@@ -74,7 +74,7 @@ onMounted(async () => {
   ></AlertNotification>
 
   <v-row>
-    <v-col cols="12" md="4" v-for="item in userRolesStore.userRoles" :key="item.id">
+    <v-col cols="12" sm="4" v-for="item in userRolesStore.userRoles" :key="item.id">
       <v-card>
         <v-card-title class="mt-3 font-weight-bold"> {{ item.user_role }} </v-card-title>
         <v-card-text class="d-flex align-center justify-space-between">
@@ -85,8 +85,14 @@ onMounted(async () => {
               <v-icon icon="mdi-tag-edit"></v-icon>
               <v-tooltip activator="parent" location="top">Edit Role</v-tooltip>
             </v-btn>
-            <v-btn variant="text" density="comfortable" @click="onDelete(item.id)" icon>
-              <v-icon icon="mdi-tag-remove" color="grey-darken-3"> </v-icon>
+            <v-btn
+              variant="text"
+              density="comfortable"
+              @click="onDelete(item.id)"
+              :disabled="item.pages.length != 1"
+              icon
+            >
+              <v-icon icon="mdi-tag-remove" color="red-darken-4"> </v-icon>
               <v-tooltip activator="parent" location="top">Delete Role</v-tooltip>
             </v-btn>
           </div>
@@ -94,10 +100,10 @@ onMounted(async () => {
       </v-card>
     </v-col>
 
-    <v-col cols="12" md="4">
+    <v-col cols="12" sm="4">
       <v-card>
         <v-card-title class="mt-3 d-flex justify-end">
-          <v-btn prepend-icon="mdi-tag-plus" color="grey-darken-3" @click="onAdd"> Add Role </v-btn>
+          <v-btn prepend-icon="mdi-tag-plus" color="red-darken-4" @click="onAdd"> Add Role </v-btn>
         </v-card-title>
         <v-card-text class="mt-2 mb-1 text-end"> Add Role if it doesn't exist. </v-card-text>
       </v-card>
