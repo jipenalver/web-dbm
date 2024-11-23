@@ -29,6 +29,20 @@ export const getMoneyText = (value) => {
   }).format(value)
 }
 
+// 👉 Precise Number
+export const getPreciseNumber = (value) => {
+  return Math.round(value * 100) / 100
+}
+
+// 👉 Alpha-numeric Random Code
+export const getRandomCode = (length = 6) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+  return Array.from({ length }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join(
+    ''
+  )
+}
+
 // 👉 Pad String Left
 export const getPadLeftText = (value, length = 4, char = '0') => {
   value = String(value)
@@ -89,12 +103,12 @@ export const filesExtract = (event) => {
 }
 
 // 👉 Fix v-date-input datetime shift issue for form
-export const dateShiftFixForm = (vueDate, formData, dateColumns = []) => {
+export const dateShiftFixForm = (formData, dateColumns = []) => {
   dateColumns.forEach((dateColumn) => {
     if (formData[dateColumn])
       formData = {
         ...formData,
-        [dateColumn]: vueDate.addDays(formData[dateColumn], 1) // Add 1 day to the date field
+        [dateColumn]: formData[dateColumn].toLocaleDateString()
       }
   })
 
@@ -102,8 +116,8 @@ export const dateShiftFixForm = (vueDate, formData, dateColumns = []) => {
 }
 
 // 👉 Fix v-date-input datetime shift issue for value
-export const dateShiftFixValue = (vueDate, date) => {
-  return vueDate.addDays(date, 1)
+export const dateShiftFixValue = (date) => {
+  return date.toLocaleDateString()
 }
 
 // 👉 Generate CSV
