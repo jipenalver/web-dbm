@@ -12,12 +12,7 @@ const { mobile } = useDisplay()
       <v-container fluid>
         <v-row>
           <v-col cols="12" lg="8" class="d-flex align-center">
-            <v-img
-              v-if="!mobile"
-              aspect-ratio="16/9"
-              height="600"
-              src="/images/banner-dbm-caraga.jpg"
-            ></v-img>
+            <v-img v-if="!mobile" aspect-ratio="16/9" height="600" src="/images/banner-dbm-caraga.jpg"></v-img>
           </v-col>
 
           <v-col cols="12" lg="4">
@@ -33,13 +28,8 @@ const { mobile } = useDisplay()
               </template>
 
               <v-card-text class="pt-4">
-                <v-img
-                  class="mx-auto mb-5"
-                  :width="mobile ? '80%' : '300'"
-                  aspect-ratio="16/9"
-                  cover
-                  src="/images/logo-dbm.png"
-                />
+                <v-img class="mx-auto mb-5" :width="mobile ? '80%' : '300'" aspect-ratio="16/9" cover
+                  src="/images/logo-dbm.png" />
 
                 <v-divider class="mb-5" />
 

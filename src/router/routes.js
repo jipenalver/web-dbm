@@ -6,7 +6,7 @@ import AccountSettingsView from '@/views/system/AccountSettingsView.vue'
 import UserRolesView from '@/views/system/manage-users/UserRolesView.vue'
 import UsersView from '@/views/system/manage-users/UsersView.vue'
 import TestingView from '@/views/system/TestingView.vue'
-
+import AddScoreBoardRecordView from '@/views/system/AddScoreBoardRecordView.vue'
 // 👉 Routes
 export const routes = [
   // Auth Pages
@@ -33,6 +33,12 @@ export const routes = [
     name: 'account-settings',
     component: AccountSettingsView,
     meta: { requiresAuth: true, isDefault: true }
+  },
+  {
+    path: '/add-scoreboard',
+    name: 'add-scoreboard',
+    component: AddScoreBoardRecordView,
+    meta: { requiresAuth: false }
   },
 
   // Admin Pages
