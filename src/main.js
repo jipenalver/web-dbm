@@ -26,4 +26,6 @@ app.use(createPinia())
 app.use(vuetify)
 app.use(router)
 
-app.mount('#app')
+//the mount method returns a root component instance
+const appRootComponentInstance = app.mount('#app')
+console.log(appRootComponentInstance)

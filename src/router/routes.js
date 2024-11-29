@@ -5,6 +5,7 @@ import NotFoundView from '@/views/errors/NotFoundView.vue'
 import AccountSettingsView from '@/views/system/AccountSettingsView.vue'
 import UserRolesView from '@/views/system/manage-users/UserRolesView.vue'
 import UsersView from '@/views/system/manage-users/UsersView.vue'
+import TestingView from '@/views/system/TestingView.vue'
 
 // 👉 Routes
 export const routes = [
@@ -60,5 +61,13 @@ export const routes = [
     name: 'not-found',
     component: NotFoundView,
     meta: { isDefault: true }
+  },
+
+  // Testing Pages
+  {
+    path: '/test',
+    name: 'test',
+    component: TestingView,
+    meta: { requiresAuth: false }
   }
 ]
