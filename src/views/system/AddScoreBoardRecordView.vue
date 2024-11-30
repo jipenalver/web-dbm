@@ -1,14 +1,12 @@
 <script setup>
 import AppLayout from '@/components/layout/AppLayout.vue'
 import { ref, onMounted, computed } from "vue"
-import { supabase } from "@/utils/supabase.js"
 import { requiredValidator } from '@/utils/validators'
 import { useDate } from 'vuetify'
-
+import { fetchScoreboardOptions } from '@/api/scoreboard'
+const reports = ['OPAR', 'DPAR', 'IPAR', 'Asst. DC/Sr. BMS']
 //how about not making this as state since this will be static
-const paps = ref([])
-const tsInCharge = ref([])
-const natureOfRequest = ref([])
+const options = ref({})
 const typesOfTransaction = ref([])
 
 const formDataDefault = {
@@ -21,70 +19,45 @@ const formDataDefault = {
   dmsReferenceNumber: '',
   datReceivedRecordSection: new Date(Date.now()),
   typeOfTransaction: '',
+  ipar: {
+
+  }
 }
 const formData = ref({
   ...formDataDefault
 })
 
-//computes prescribed period value based on selected type of transaction
-const prescribedPeriod = computed(() => {
-  return Array.isArray(typesOfTransaction.value) && formData.value.typeOfTransaction.length !== 0 ? typesOfTransaction.value.find((transaction) => {
-    return transaction.transaction_type == formData.value.typeOfTransaction
-  }).prescribed_periods[0].prescribed_period_value : 'Hello world'
-})
+//transforms the transactions list from supabase into list of strings
 const transactionOptions = computed(() => {
   return typesOfTransaction.value.map((transaction) => (transaction.transaction_type))
 })
+const prescribedPeriodValues = computed(() => {
+  //iterate each reports and create prescribed value for each reports
+  let prescribedValues = {}
+  reports.forEach((report) => {
+    const result = Array.isArray(typesOfTransaction.value) && formData.value.typeOfTransaction.length !== 0 ? typesOfTransaction.value.find((transaction) => (
+      transaction.transaction_type === formData.value.typeOfTransaction
+    )).prescribed_periods.find((prescribedPeriod) => (
+      prescribedPeriod.report === report
+    )).prescribed_period_value : 'Choose Transaction Type'
 
-//this will be called to be called at once to avoid duplication
-//fetches list of pap's
-const fetchPaps = async () => {
-  const { data: papResults, error } = await supabase.from("pap").select("code")
-  if (error) {
-    return { error: "Error fetching P/A/P data" }
-  }
-  paps.value = papResults.map((pap) => (pap.code))
-}
-const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
-  //fetch with its associated prescribed period
-  if (prescribedPeriod) {
-    const { data: typeOfTransactionResult, error } = await supabase.from("type_of_transactions")
-      .select("transaction_type, prescribed_periods(prescribed_period_value)")
-    if (error) {
-      return { error: "Error fetching list of transactions type with prescribed periods data" }
+    if (report === 'Asst. DC/Sr. BMS') {
+      prescribedValues['dcsr'] = result
+    } else {
+      prescribedValues[report.toLowerCase()] = result
     }
-    typesOfTransaction.value = typeOfTransactionResult
-    return
-  }
-  const { data: typeOfTransactionResult, error } = await supabase.from("type_of_transactions").select("transaction_type")
-  if (error) {
-    return { error: "Error fetching list of transactions type data" }
-  }
-  typesOfTransaction.value = typeOfTransactionResult.map((transaction) => (transaction.transaction_type))
-}
-
-const fetchTs = async () => {
-  const { data: tsResults, error } = await supabase.from("ts_in_charge").select("name")
-  if (error) {
-    return { error: "Error fetching list of TS in Charge" }
-  }
-
-  tsInCharge.value = tsResults.map((ts) => ts.name)
-}
-const fetchNatureOfRequest = async () => {
-  const { data: norList, error } = await supabase.from("nature_of_transaction").select("noq_name")
-  if (error) {
-    return { error: "Error fetching list of Nature of Request" }
-  }
-  natureOfRequest.value = norList.map((ts) => ts.noq_name)
-
-}
-
+  })
+  return prescribedValues
+})
 onMounted(async () => {
-  await fetchPaps()
-  await fetchTs()
-  await fetchNatureOfRequest()
-  await fetchTypeOfTransactionList(true)
+  //refactor to fetch at once
+  const [natureOfRequestData, tsInChargeData, papData, typeOfTransactionData] = await fetchScoreboardOptions()
+  options.value = {
+    natureOfRequest: natureOfRequestData,
+    tsInCharge: tsInChargeData,
+    pap: papData,
+  }
+  typesOfTransaction.value = typeOfTransactionData
 })
 </script>
 
@@ -94,14 +67,15 @@ onMounted(async () => {
     <template #content>
       <v-container>
         <v-form @submit.prevent>
+          <div>{{ prescribedPeriodValues }}</div>
           <v-row>
             <v-col>
-              <v-select label="Choose P/A/P" :items="paps" :rules="[requiredValidator]" outlined
+              <v-select label="Choose P/A/P" :items="options.pap" :rules="[requiredValidator]" outlined
                 v-model="formData.particulars.pap">
               </v-select>
             </v-col>
             <v-col>
-              <v-select label="Choose TS in Charge" :items="tsInCharge" :rules="[requiredValidator]" outlined
+              <v-select label="Choose TS in Charge" :items="options.tsInCharge" :rules="[requiredValidator]" outlined
                 v-model="formData.particulars.ts">
               </v-select>
             </v-col>
@@ -113,8 +87,8 @@ onMounted(async () => {
               </v-text-field>
             </v-col>
             <v-col>
-              <v-select label="Choose Nature of Transaction" :items="natureOfRequest" :rules="[requiredValidator]"
-                outlined v-model="formData.particulars.natureOfRequest">
+              <v-select label="Choose Nature of Transaction" :items="options.natureOfRequest"
+                :rules="[requiredValidator]" outlined v-model="formData.particulars.natureOfRequest">
               </v-select>
             </v-col>
           </v-row>
@@ -134,7 +108,21 @@ onMounted(async () => {
                 label="Choose Type of Transaction"></v-select>
             </v-col>
             <v-col>
-              <v-text-field label="Prescribed Period" readonly v-model="prescribedPeriod"></v-text-field>
+              <v-text-field label="Prescribed Period" readonly v-model="prescribedPeriodValues.opar"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field label="Prescribed Period for IPAR" readonly
+                v-model="prescribedPeriodValues.ipar"></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field label="Prescribed Period for DPAR" readonly
+                v-model="prescribedPeriodValues.dpar"></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field label="Prescribed Period for DCSR" readonly
+                v-model="prescribedPeriodValues.dcsr"></v-text-field>
             </v-col>
           </v-row>
         </v-form>
