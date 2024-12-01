@@ -14,20 +14,13 @@ const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
     const { data: typeOfTransactionResult, error } = await supabase
       .from('type_of_transactions')
       .select(
-        'transaction_type, prescribed_periods(prescribed_period_value, report:reports(report_name))'
+        'transaction_type, prescribed_periods(prescribed_period_value, report:reports(report_name, date_time_forwarded_to))'
       )
     if (error) {
       return { error: 'Error fetching list of transactions type with prescribed periods data' }
     }
 
-    //transform since i cant flat the nesting result given by supabase
-    return typeOfTransactionResult.map((transactionInstance) => ({
-      ...transactionInstance,
-      prescribed_periods: transactionInstance.prescribed_periods.map((prescribedPeriod) => ({
-        ...prescribedPeriod,
-        report: prescribedPeriod.report.report_name
-      }))
-    }))
+    return typeOfTransactionResult
   }
 
   const { data: typeOfTransactionResult, error } = await supabase

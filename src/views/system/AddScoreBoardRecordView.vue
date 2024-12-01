@@ -4,11 +4,12 @@ import { ref, onMounted, computed } from "vue"
 import { requiredValidator } from '@/utils/validators'
 import { useDate } from 'vuetify'
 import { fetchScoreboardOptions } from '@/api/scoreboard'
+import ScoreboardFormDialog from "@/components/system/scoreboard/ScoreboardFormDialog.vue"
+
 const reports = ['OPAR', 'DPAR', 'IPAR', 'Asst. DC/Sr. BMS']
-//how about not making this as state since this will be static
 const options = ref({})
 const typesOfTransaction = ref([])
-
+const dialogOpen = ref(false)
 const formDataDefault = {
   particulars: {
     pap: '',
@@ -21,7 +22,10 @@ const formDataDefault = {
   typeOfTransaction: '',
   ipar: {
 
-  }
+  },
+  dpar: {},
+  opar: {},
+  dcsr: {},
 }
 const formData = ref({
   ...formDataDefault
@@ -31,24 +35,25 @@ const formData = ref({
 const transactionOptions = computed(() => {
   return typesOfTransaction.value.map((transaction) => (transaction.transaction_type))
 })
-const prescribedPeriodValues = computed(() => {
-  //iterate each reports and create prescribed value for each reports
-  let prescribedValues = {}
-  reports.forEach((report) => {
-    const result = Array.isArray(typesOfTransaction.value) && formData.value.typeOfTransaction.length !== 0 ? typesOfTransaction.value.find((transaction) => (
-      transaction.transaction_type === formData.value.typeOfTransaction
-    )).prescribed_periods.find((prescribedPeriod) => (
-      prescribedPeriod.report === report
-    )).prescribed_period_value : 'Choose Transaction Type'
 
-    if (report === 'Asst. DC/Sr. BMS') {
-      prescribedValues['dcsr'] = result
-    } else {
-      prescribedValues[report.toLowerCase()] = result
-    }
-  })
-  return prescribedValues
+//returns the prescribed period values for each report type
+const prescribedPeriodValues = computed(() => {
+  //iterate each reports and create prescribed value for each reports based on the selected type of transaction
+  if (Array.isArray(typesOfTransaction.value) && formData.value.typeOfTransaction.length !== 0) {
+    const prescribedPeriodsResult = typesOfTransaction.value.find((transaction) => (
+      transaction.transaction_type === formData.value.typeOfTransaction
+    )).prescribed_periods
+    return prescribedPeriodsResult
+  }
+  return []
+
 })
+const handleDialogFormSubmit = (formData) => {
+  console.log(formData)
+}
+const handleFormSubmit = () => {
+  console.log("Form submitted")
+}
 onMounted(async () => {
   //refactor to fetch at once
   const [natureOfRequestData, tsInChargeData, papData, typeOfTransactionData] = await fetchScoreboardOptions()
@@ -67,7 +72,6 @@ onMounted(async () => {
     <template #content>
       <v-container>
         <v-form @submit.prevent>
-          <div>{{ prescribedPeriodValues }}</div>
           <v-row>
             <v-col>
               <v-select label="Choose P/A/P" :items="options.pap" :rules="[requiredValidator]" outlined
@@ -107,24 +111,15 @@ onMounted(async () => {
               <v-select :items="transactionOptions" v-model="formData.typeOfTransaction" outlined
                 label="Choose Type of Transaction"></v-select>
             </v-col>
-            <v-col>
-              <v-text-field label="Prescribed Period" readonly v-model="prescribedPeriodValues.opar"></v-text-field>
+          </v-row>
+          <v-row v-if="prescribedPeriodValues.length !== 0">
+            <v-col v-for="(value, key) in prescribedPeriodValues">
+              <ScoreboardFormDialog @form-submitted="handleDialogFormSubmit" :reportType="value.report.report_name"
+                :prescribedPeriod="value.prescribed_period_value"
+                :dateTimeForwarded="value.report.date_time_forwarded_to" />
             </v-col>
           </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field label="Prescribed Period for IPAR" readonly
-                v-model="prescribedPeriodValues.ipar"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field label="Prescribed Period for DPAR" readonly
-                v-model="prescribedPeriodValues.dpar"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field label="Prescribed Period for DCSR" readonly
-                v-model="prescribedPeriodValues.dcsr"></v-text-field>
-            </v-col>
-          </v-row>
+          <v-btn text="Submit Form" @action="handleFormSubmit"></v-btn>
         </v-form>
       </v-container>
     </template>
