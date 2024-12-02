@@ -20,9 +20,7 @@ const formDataDefault = {
   dmsReferenceNumber: '',
   datReceivedRecordSection: new Date(Date.now()),
   typeOfTransaction: '',
-  ipar: {
-
-  },
+  ipar: {},
   dpar: {},
   opar: {},
   dcsr: {},
@@ -30,13 +28,15 @@ const formDataDefault = {
 const formData = ref({
   ...formDataDefault
 })
-
+const formattedDate = computed(() => (
+  formData.value.datRecievedRecordSection
+))
 //transforms the transactions list from supabase into list of strings
 const transactionOptions = computed(() => {
   return typesOfTransaction.value.map((transaction) => (transaction.transaction_type))
 })
 
-//returns the prescribed period values for each report type
+//computes the prescribed period values for each report type
 const prescribedPeriodValues = computed(() => {
   //iterate each reports and create prescribed value for each reports based on the selected type of transaction
   if (Array.isArray(typesOfTransaction.value) && formData.value.typeOfTransaction.length !== 0) {
@@ -103,7 +103,13 @@ onMounted(async () => {
               </v-text-field>
             </v-col>
             <v-col>
-              <v-date-picker v-model="formData.datReceivedRecordSection"></v-date-picker>
+              <v-menu>
+                <template v-slot:activator="{ props: menuProps }">
+                  <v-text-field v-bind="menuProps" label="Date and Time Recieved By Record Section"
+                    v-model="formattedDate"></v-text-field>
+                </template>
+                <v-date-picker v-model="formData.datReceivedRecordSection"></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
           <v-row>

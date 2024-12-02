@@ -2,49 +2,61 @@
 import { requiredValidator } from "@/utils/validators.js"
 import { formActionDefault } from '@/utils/supabase.js'
 import AlertNotification from '@/components/common/AlertNotification.vue'
-import { toRaw } from "vue"
+import { onMounted, reactive, computed } from "vue"
 const props = defineProps(["prescribedPeriod", "dateTimeForwarded", "reportType"]);
 const emit = defineEmits(['formSubmitted']);
 import { ref } from "vue"
+
+const formDataDefault = {
+    prescribedPeriod: props.prescribedPeriod,
+    numWorkingDays: '',
+    reviewedBy: '',
+    dateTimeForwarded: new Date(Date.now())
+}
+
+const dateMenu = ref(false)
 const isOpen = ref(false)
 const refVForm = ref()
 const formAction = ref({
     ...formActionDefault,
 
 })
-const formData = ref({
-    prescribedPeriod: props.prescribedPeriod,
-    numWorkingDays: '',
-    reviewedBy: '',
-    dateTimeForwarded: ''
-})
+const formData = ref({ ...formDataDefault })
 //cleans state onClose
 const onClose = () => {
     isOpen.value = false
     formAction.value = { ...formActionDefault }
+    formData.value = { ...formDataDefault }
 }
-
-
+//havent formatted it yet
+const formattedDate = computed(() => {
+    return formData.value.dateTimeForwarded
+})
+//let the parent component handle this event
 const onFormSubmit = () => {
     refVForm.value?.validate().then(({ valid }) => {
         if (valid) {
-            //let the parent component handle this event
-            const rawFormData = toRaw(formData)
-            emit('formSubmitted', { ...rawFormData, reportType: props.reportType })
+            //close modal
+            isOpen.value = false
+            emit('formSubmitted', { ...formData.value, reportType: props.reportType })
         }
         else formAction.value = {
             ...formActionDefault,
             formErrorMessage: "Something went wrong in the form"
         }
     })
+
 }
-</script>
+onMounted(() => {
+    console.log("Dialogs have been mounted")
+
+})</script>
 
 <template>
     <v-btn :text="`Click to Fill ${props.reportType.toUpperCase()} Specifics`" variant="elevated"
         @click="isOpen = true"></v-btn>
     <v-dialog v-model="isOpen" max-width="900">
-        <v-card title="IPAR Specifics">
+        <v-card :title="props.reportType + ' Specifics'">
             <AlertNotification :form-success-message="formAction.formSuccessMessage"
                 :form-error-message="formAction.formErrorMessage"></AlertNotification>
             <v-card-text>
@@ -55,8 +67,14 @@ const onFormSubmit = () => {
                                 :rule="requiredValidator"></v-text-field>
                         </v-col>
                         <v-col>
-                            <v-text-field :label="props.dateTimeForwarded" v-model="formData.dateTimeForwaded"
-                                :rule="requiredValidator"></v-text-field>
+                            <v-menu v-model="dateMenu">
+                                <template v-slot:activator="{ props: menuProps }">
+                                    <v-text-field v-bind="menuProps" :label="props.dateTimeForwarded"
+                                        v-model="formattedDate" :rule="requiredValidator"></v-text-field>
+                                </template>
+                                <v-date-picker v-model="formData.dateTimeForwarded"
+                                    @update:model-value="dateMenu = false"></v-date-picker>
+                            </v-menu>
                         </v-col>
                     </v-row>
                     <v-row>

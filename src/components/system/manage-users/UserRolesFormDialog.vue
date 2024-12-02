@@ -94,26 +94,17 @@ const onFormReset = () => {
 
 <template>
   <v-dialog max-width="600" :model-value="props.isDialogVisible" persistent>
-    <v-card
-      prepend-icon="mdi-tag"
-      title="User Role"
-      subtitle="Note: The Dashboard and Account Settings Page are accessible by default."
-    >
-      <AlertNotification
-        :form-success-message="formAction.formSuccessMessage"
-        :form-error-message="formAction.formErrorMessage"
-      ></AlertNotification>
+    <v-card prepend-icon="mdi-tag" title="User Role"
+      subtitle="Note: The Dashboard and Account Settings Page are accessible by default.">
+      <AlertNotification :form-success-message="formAction.formSuccessMessage"
+        :form-error-message="formAction.formErrorMessage"></AlertNotification>
 
       <v-form ref="refVForm" @submit.prevent="onFormSubmit">
         <v-card-text>
           <v-row dense>
             <v-col cols="12">
-              <v-text-field
-                v-model="formData.user_role"
-                label="Role Name"
-                :rules="[requiredValidator]"
-                :disabled="isUpdate"
-              ></v-text-field>
+              <v-text-field v-model="formData.user_role" label="Role Name" :rules="[requiredValidator]"
+                :disabled="isUpdate"></v-text-field>
             </v-col>
 
             <v-col cols="12">
@@ -124,13 +115,8 @@ const onFormReset = () => {
                   </template>
 
                   <template v-if="title === mainNav[0][0]">
-                    <v-list-item
-                      v-for="([title, icon, subtitle, to], i) in menuItemsNav1"
-                      :key="i"
-                      :prepend-icon="icon"
-                      :title="title"
-                      :subtitle="subtitle ?? undefined"
-                    >
+                    <v-list-item v-for="([title, icon, subtitle, to], i) in menuItemsNav1" :key="i" :prepend-icon="icon"
+                      :title="title" :subtitle="subtitle ?? undefined">
                       <template #append>
                         <v-list-item-action end>
                           <v-checkbox-btn v-model="formData.pages" :value="to"></v-checkbox-btn>
@@ -140,13 +126,8 @@ const onFormReset = () => {
                   </template>
 
                   <template v-if="title === mainNav[1][0]">
-                    <v-list-item
-                      v-for="([title, icon, subtitle, to], i) in menuItemsNav2"
-                      :key="i"
-                      :prepend-icon="icon"
-                      :title="title"
-                      :subtitle="subtitle ?? undefined"
-                    >
+                    <v-list-item v-for="([title, icon, subtitle, to], i) in menuItemsNav2" :key="i" :prepend-icon="icon"
+                      :title="title" :subtitle="subtitle ?? undefined">
                       <template #append>
                         <v-list-item-action end>
                           <v-checkbox-btn v-model="formData.pages" :value="to"></v-checkbox-btn>
@@ -156,13 +137,8 @@ const onFormReset = () => {
                   </template>
 
                   <template v-if="title === mainNav[2][0]">
-                    <v-list-item
-                      v-for="([title, icon, subtitle, to], i) in menuItemsNav3"
-                      :key="i"
-                      :prepend-icon="icon"
-                      :title="title"
-                      :subtitle="subtitle ?? undefined"
-                    >
+                    <v-list-item v-for="([title, icon, subtitle, to], i) in menuItemsNav3" :key="i" :prepend-icon="icon"
+                      :title="title" :subtitle="subtitle ?? undefined">
                       <template #append>
                         <v-list-item-action end>
                           <v-checkbox-btn v-model="formData.pages" :value="to"></v-checkbox-btn>
@@ -172,13 +148,8 @@ const onFormReset = () => {
                   </template>
 
                   <template v-if="title === mainNav[3][0]">
-                    <v-list-item
-                      v-for="([title, icon, subtitle, to], i) in menuItemsNav4"
-                      :key="i"
-                      :prepend-icon="icon"
-                      :title="title"
-                      :subtitle="subtitle ?? undefined"
-                    >
+                    <v-list-item v-for="([title, icon, subtitle, to], i) in menuItemsNav4" :key="i" :prepend-icon="icon"
+                      :title="title" :subtitle="subtitle ?? undefined">
                       <template #append>
                         <v-list-item-action end>
                           <v-checkbox-btn v-model="formData.pages" :value="to"></v-checkbox-btn>
@@ -188,13 +159,8 @@ const onFormReset = () => {
                   </template>
 
                   <template v-if="title === mainNav[4][0]">
-                    <v-list-item
-                      v-for="([title, icon, subtitle, to], i) in menuItemsNav5"
-                      :key="i"
-                      :prepend-icon="icon"
-                      :title="title"
-                      :subtitle="subtitle ?? undefined"
-                    >
+                    <v-list-item v-for="([title, icon, subtitle, to], i) in menuItemsNav5" :key="i" :prepend-icon="icon"
+                      :title="title" :subtitle="subtitle ?? undefined">
                       <template #append>
                         <v-list-item-action end>
                           <v-checkbox-btn v-model="formData.pages" :value="to"></v-checkbox-btn>
@@ -215,14 +181,8 @@ const onFormReset = () => {
 
           <v-btn text="Close" variant="plain" prepend-icon="mdi-close" @click="onFormReset"></v-btn>
 
-          <v-btn
-            prepend-icon="mdi-pencil"
-            color="red-darken-4"
-            type="submit"
-            variant="elevated"
-            :disabled="formAction.formProcess"
-            :loading="formAction.formProcess"
-          >
+          <v-btn prepend-icon="mdi-pencil" color="red-darken-4" type="submit" variant="elevated"
+            :disabled="formAction.formProcess" :loading="formAction.formProcess">
             {{ isUpdate ? 'Update Role' : 'Add Role' }}
           </v-btn>
         </v-card-actions>
