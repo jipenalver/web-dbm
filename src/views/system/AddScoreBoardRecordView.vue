@@ -34,7 +34,7 @@ const formData = ref({
   ...formDataDefault
 })
 const formattedDate = computed(() => (
-  formData.value.datRecievedRecordSection
+  formData.value.dateRecievedRecordSection
 ))
 
 //computes the prescribed period values for each report type
@@ -61,7 +61,10 @@ const handleFormSubmit = async () => {
   console.log("Form submitted");
 
   //i have to manually unwraped the proxied nested objects in these ref (will ask for suggestions)
-  await insertScoreboardData({ ...formData.value, particulars: { ...formData.value.particulars }, reportsData: [...formData.value.reportsData] })
+  const { data, error } = await insertScoreboardData({ ...formData.value, particulars: { ...formData.value.particulars }, reportsData: [...formData.value.reportsData] })
+  if (error) {
+    console.log("Error inserting data into scoreboard")
+  }
 
 }
 onMounted(async () => {
@@ -90,8 +93,8 @@ onMounted(async () => {
               </v-select>
             </v-col>
             <v-col>
-              <v-select label="Choose TS in Charge" :items="options.tsInCharge" :rules="[requiredValidator]" outlined
-                v-model="formData.particulars.ts">
+              <v-select label="Choose TS in Charge" :items="options.tsInCharge" item-title="name" item-value="tic_id"
+                :rules="[requiredValidator]" outlined v-model="formData.particulars.ts">
               </v-select>
             </v-col>
           </v-row>
@@ -108,8 +111,8 @@ onMounted(async () => {
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field :rule="requiredValidator" label="DMS Reference Number"
-                v-model="formData.particulars.dmsReferenceNumber" outlined clearable>
+              <v-text-field :rule="requiredValidator" label="DMS Reference Number" v-model="formData.dmsReferenceNumber"
+                outlined clearable>
               </v-text-field>
             </v-col>
           </v-row>
@@ -121,7 +124,7 @@ onMounted(async () => {
             </v-col>
             <v-col>
               <v-text-field v-model="formData.timeReceivedRecordSection" label="Pick Time" :active="timeMenu"
-                :focus="timeMenu" prepend-inner-icon="mdi-clock-time-four-outline" readonly>
+                prepend-inner-icon="mdi-clock-time-four-outline" readonly>
 
                 <v-menu v-model="timeMenu" :close-on-content-click="false" activator="parent"
                   transition="scale-transition">

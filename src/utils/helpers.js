@@ -1,3 +1,7 @@
+export const combineDateTime = (date, time) => {
+  return new Date(`${date.toDateString()} ${time}`)
+}
+
 // 👉 Avatar Text Initials
 export const getAvatarText = (name) => {
   const nameParts = name.trim().split(' ').filter(Boolean)

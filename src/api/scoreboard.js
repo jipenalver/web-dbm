@@ -1,4 +1,6 @@
 import { supabase } from '@/utils/supabase.js'
+import { toRaw } from 'vue'
+import { combineDateTime } from '@/utils/helpers'
 //fetching functionality for scoreboard related data
 const fetchPaps = async () => {
   const { data: papResults, error } = await supabase.from('pap').select('id, code')
@@ -32,12 +34,12 @@ const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
   return typeOfTransactionResult.map((transaction) => transaction.transaction_type)
 }
 const fetchTs = async () => {
-  const { data: tsResults, error } = await supabase.from('ts_in_charge').select('name')
+  const { data: tsResults, error } = await supabase.from('ts_in_charge').select('tic_id, name')
   if (error) {
     throw new Error(error)
   }
-
-  return tsResults.map((ts) => ts.name)
+  console.log(tsResults)
+  return tsResults
 }
 
 const fetchNatureOfRequest = async () => {
@@ -72,10 +74,44 @@ export const fetchScoreboardOptions = async () => {
 //this calls a lot of supabase trip bc I did not store the ids of these foreign values for scoreboard
 export const insertScoreboardData = async (formData) => {
   console.log(formData)
-  //const { data, error } = await supabase
-  //  .from('pap')
-  //  .select('id')
-  //  .eq('code', formData.particulars.pap)
-  //if (error) return error
-  //console.log(data)
+  const { reportsData, ...extractedFormData } = formData
+
+  //setting timestamp, combining selected date and time
+  const combinedDateTime = combineDateTime(
+    extractedFormData.dateReceivedRecordSection,
+    extractedFormData.timeReceivedRecordSection
+  )
+
+  const { data, error } = await supabase
+    .from('scoreboard_records')
+    .insert({
+      pap_id: extractedFormData.particulars.pap,
+      ts_in_charge_id: extractedFormData.particulars.ts,
+      transaction_type: extractedFormData.typeOfTransaction,
+      agency_name: extractedFormData.particulars.agency,
+      dms_reference_number: extractedFormData.dmsReferenceNumber,
+      date_time_received: combinedDateTime,
+      remarks: extractedFormData.remarks,
+      status_id: extractedFormData.status
+    })
+    .select('scoreboard_id')
+  if (error) {
+    console.log(error)
+    return { error: error }
+  }
+  const transformedReportData = reportsData.map((reportItem) => {
+    const combinedDateTime = combineDateTime(reportItem.dateForwarded, reportItem.timeForwarded)
+    return {
+      report_id: reportItem.reportType.report_id,
+      scoreboard_id: data[0].scoreboard_id,
+      date_time_forwarded: combinedDateTime,
+      num_working_time: reportItem.numWorkingDays
+    }
+  })
+  const { reportError } = await supabase.from('report_records').insert(transformedReportData)
+  if (reportError) {
+    console.log(reportError)
+    return { error: reportError }
+  }
+  return { data: `Succesfully inserted with scoreboard id ${data[0].scoreboard_id}` }
 }
