@@ -3,7 +3,7 @@ import { supabase } from '@/utils/supabase.js'
 const fetchPaps = async () => {
   const { data: papResults, error } = await supabase.from('pap').select('code')
   if (error) {
-    return { error: 'Error fetching P/A/P data' }
+    throw new Error(error)
   }
   return papResults.map((pap) => pap.code)
 }
@@ -17,7 +17,7 @@ const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
         'transaction_type, prescribed_periods(prescribed_period_value, report:reports(report_name, date_time_forwarded_to))'
       )
     if (error) {
-      return { error: 'Error fetching list of transactions type with prescribed periods data' }
+      throw new Error(error)
     }
 
     return typeOfTransactionResult
@@ -27,14 +27,14 @@ const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
     .from('type_of_transactions')
     .select('transaction_type')
   if (error) {
-    return { error: 'Error fetching list of transactions type data' }
+    throw new Error(error)
   }
   return typeOfTransactionResult.map((transaction) => transaction.transaction_type)
 }
 const fetchTs = async () => {
   const { data: tsResults, error } = await supabase.from('ts_in_charge').select('name')
   if (error) {
-    return { error: 'Error fetching list of TS in Charge' }
+    throw new Error(error)
   }
 
   return tsResults.map((ts) => ts.name)
@@ -43,9 +43,17 @@ const fetchTs = async () => {
 const fetchNatureOfRequest = async () => {
   const { data: norList, error } = await supabase.from('nature_of_transaction').select('noq_name')
   if (error) {
-    return { error: 'Error fetching list of Nature of Request' }
+    throw new Error(error)
   }
   return norList.map((ts) => ts.noq_name)
+}
+const fetchStatuses = async () => {
+  const { data, error } = await supabase.from('status').select('status_name')
+  if (error) {
+    throw new Error(error)
+  }
+  console.log(data)
+  return data.map((statusData) => statusData.status_name)
 }
 export async function fetchScoreboardOptions() {
   try {
@@ -53,7 +61,8 @@ export async function fetchScoreboardOptions() {
       fetchNatureOfRequest(),
       fetchTs(),
       fetchPaps(),
-      fetchTypeOfTransactionList(true)
+      fetchTypeOfTransactionList(true),
+      fetchStatuses()
     ])
   } catch (error) {
     return { error }

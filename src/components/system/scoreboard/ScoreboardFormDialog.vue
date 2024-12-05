@@ -6,15 +6,19 @@ import { onMounted, reactive, computed } from "vue"
 const props = defineProps(["prescribedPeriod", "dateTimeForwarded", "reportType"]);
 const emit = defineEmits(['formSubmitted']);
 import { ref } from "vue"
+import { useDate } from "vuetify"
 
+
+const date = useDate()
 const formDataDefault = {
     prescribedPeriod: props.prescribedPeriod,
     numWorkingDays: '',
     reviewedBy: '',
-    dateTimeForwarded: new Date(Date.now())
+    dateForwarded: new Date(Date.now()),
+    timeForwarded: ''
 }
 
-const dateMenu = ref(false)
+const timeMenu = ref(false)
 const isOpen = ref(false)
 const refVForm = ref()
 const formAction = ref({
@@ -30,7 +34,8 @@ const onClose = () => {
 }
 //havent formatted it yet
 const formattedDate = computed(() => {
-    return formData.value.dateTimeForwarded
+
+    return date.format('2010-04-13', "keyboardDate")
 })
 //let the parent component handle this event
 const onFormSubmit = () => {
@@ -66,15 +71,25 @@ onMounted(() => {
                             <v-text-field readonly v-model="props.prescribedPeriod" label="Prescribed Period"
                                 :rule="requiredValidator"></v-text-field>
                         </v-col>
+
+                    </v-row>
+                    <v-row>
                         <v-col>
-                            <v-menu v-model="dateMenu">
-                                <template v-slot:activator="{ props: menuProps }">
-                                    <v-text-field v-bind="menuProps" :label="props.dateTimeForwarded"
-                                        v-model="formattedDate" :rule="requiredValidator"></v-text-field>
-                                </template>
-                                <v-date-picker v-model="formData.dateTimeForwarded"
-                                    @update:model-value="dateMenu = false"></v-date-picker>
-                            </v-menu>
+                            <v-date-input :label="props.dateTimeForwarded" :rules="[requiredValidator]"
+                                v-model="formData.dateForwarded" prepend-icon=""
+                                prepend-inner-icon="$calendar"></v-date-input>
+
+                        </v-col>
+                        <v-col>
+                            <v-text-field v-model="formData.timeForwarded" label="Pick Time" :active="timeMenu"
+                                prepend-inner-icon="mdi-clock-time-four-outline" readonly>
+
+                                <v-menu v-model="timeMenu" :close-on-content-click="false" activator="parent"
+                                    transition="scale-transition">
+                                    <v-time-picker v-if="timeMenu" v-model="formData.timeForwarded" format="24hr">
+                                    </v-time-picker>
+                                </v-menu>
+                            </v-text-field>
                         </v-col>
                     </v-row>
                     <v-row>
