@@ -1,11 +1,11 @@
 import { supabase } from '@/utils/supabase.js'
 //fetching functionality for scoreboard related data
 const fetchPaps = async () => {
-  const { data: papResults, error } = await supabase.from('pap').select('code')
+  const { data: papResults, error } = await supabase.from('pap').select('id, code')
   if (error) {
     throw new Error(error)
   }
-  return papResults.map((pap) => pap.code)
+  return papResults
 }
 const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
   //fetch transactions with its associated prescribed period value and the report it belongs
@@ -14,12 +14,12 @@ const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
     const { data: typeOfTransactionResult, error } = await supabase
       .from('type_of_transactions')
       .select(
-        'transaction_type, prescribed_periods(prescribed_period_value, report:reports(report_name, date_time_forwarded_to))'
+        'transaction_type, prescribed_periods(prescribed_period_value, report:reports(report_id, report_name, date_time_forwarded_to))'
       )
     if (error) {
       throw new Error(error)
     }
-
+    console.log(typeOfTransactionResult)
     return typeOfTransactionResult
   }
 
@@ -48,14 +48,14 @@ const fetchNatureOfRequest = async () => {
   return norList.map((ts) => ts.noq_name)
 }
 const fetchStatuses = async () => {
-  const { data, error } = await supabase.from('status').select('status_name')
+  const { data, error } = await supabase.from('status').select('id, status_name')
   if (error) {
     throw new Error(error)
   }
   console.log(data)
-  return data.map((statusData) => statusData.status_name)
+  return data
 }
-export async function fetchScoreboardOptions() {
+export const fetchScoreboardOptions = async () => {
   try {
     return await Promise.all([
       fetchNatureOfRequest(),
@@ -67,4 +67,15 @@ export async function fetchScoreboardOptions() {
   } catch (error) {
     return { error }
   }
+}
+
+//this calls a lot of supabase trip bc I did not store the ids of these foreign values for scoreboard
+export const insertScoreboardData = async (formData) => {
+  console.log(formData)
+  //const { data, error } = await supabase
+  //  .from('pap')
+  //  .select('id')
+  //  .eq('code', formData.particulars.pap)
+  //if (error) return error
+  //console.log(data)
 }

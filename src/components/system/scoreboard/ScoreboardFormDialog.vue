@@ -37,11 +37,11 @@ const formattedDate = computed(() => {
 
     return date.format('2010-04-13', "keyboardDate")
 })
+
 //let the parent component handle this event
 const onFormSubmit = () => {
     refVForm.value?.validate().then(({ valid }) => {
         if (valid) {
-            //close modal
             isOpen.value = false
             emit('formSubmitted', { ...formData.value, reportType: props.reportType })
         }
@@ -58,14 +58,14 @@ onMounted(() => {
 })</script>
 
 <template>
-    <v-btn :text="`Click to Fill ${props.reportType.toUpperCase()} Specifics`" variant="elevated"
+    <v-btn :text="`Click to Fill ${props.reportType.report_name.toUpperCase()} Specifics`" variant="elevated"
         @click="isOpen = true"></v-btn>
     <v-dialog v-model="isOpen" max-width="900">
-        <v-card :title="props.reportType + ' Specifics'">
+        <v-card :title="props.reportType.report_name + ' Specifics'">
             <AlertNotification :form-success-message="formAction.formSuccessMessage"
                 :form-error-message="formAction.formErrorMessage"></AlertNotification>
             <v-card-text>
-                <v-form ref="refVForm" @onSubmit.prevent="onFormSubmit">
+                <v-form ref="refVForm" @submit.prevent="onFormSubmit">
                     <v-row dense>
                         <v-col>
                             <v-text-field readonly v-model="props.prescribedPeriod" label="Prescribed Period"
@@ -98,19 +98,20 @@ onMounted(() => {
                                 v-model="formData.numWorkingDays" :rules="[requiredValidator]">
                             </v-text-field>
                         </v-col>
-                        <v-col v-if="props.reportType === 'Asst. DC/Sr. BMS'">
+                        <v-col v-if="props.reportType.report_name === 'Asst. DC/Sr. BMS'">
                             <v-text-field label="Reviewed By" v-model="formData.reviewedBy"
                                 :rules="[requiredValidator]">
                             </v-text-field>
                         </v-col>
                     </v-row>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text="Close" variant="tonal" type="button" @click="onClose"></v-btn>
+                        <v-btn text="Confirm" variant="elevated" type="submit"></v-btn>
+                    </v-card-actions>
                 </v-form>
             </v-card-text>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn text="Close" variant="tonal" @click="onClose"></v-btn>
-                <v-btn text="Confirm" variant="elevated" @click="onFormSubmit"></v-btn>
-            </v-card-actions>
+
         </v-card>
     </v-dialog>
 </template>

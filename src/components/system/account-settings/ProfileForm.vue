@@ -53,19 +53,13 @@ const onFormSubmit = () => {
 </script>
 
 <template>
-  <AlertNotification
-    :form-success-message="formAction.formSuccessMessage"
-    :form-error-message="formAction.formErrorMessage"
-  ></AlertNotification>
+  <AlertNotification :form-success-message="formAction.formSuccessMessage"
+    :form-error-message="formAction.formErrorMessage"></AlertNotification>
 
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row dense>
       <v-col cols="12" md="4">
-        <v-text-field
-          v-model="formData.firstname"
-          label="Firstname"
-          :rules="[requiredValidator]"
-        ></v-text-field>
+        <v-text-field v-model="formData.firstname" label="Firstname" :rules="[requiredValidator]"></v-text-field>
       </v-col>
 
       <v-col cols="12" md="4">
@@ -73,42 +67,22 @@ const onFormSubmit = () => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-text-field
-          v-model="formData.lastname"
-          label="Lastname"
-          :rules="[requiredValidator]"
-        ></v-text-field>
+        <v-text-field v-model="formData.lastname" label="Lastname" :rules="[requiredValidator]"></v-text-field>
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-text-field
-          readonly
-          disabled
-          v-model="formData.email"
-          label="Email"
-          prepend-inner-icon="mdi-email-outline"
-        ></v-text-field>
+        <v-text-field readonly disabled v-model="formData.email" label="Email"
+          prepend-inner-icon="mdi-email-outline"></v-text-field>
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-text-field
-          v-model="formData.phone"
-          label="Phone Number"
-          prepend-inner-icon="mdi-phone"
-          prefix="+63"
-          :rules="[requiredValidator, integerValidator]"
-        ></v-text-field>
+        <v-text-field v-model="formData.phone" label="Phone Number" prepend-inner-icon="mdi-phone" prefix="+63"
+          :rules="[requiredValidator, integerValidator]"></v-text-field>
       </v-col>
     </v-row>
 
-    <v-btn
-      class="mt-2"
-      type="submit"
-      color="red-darken-4"
-      prepend-icon="mdi-account-box-edit-outline"
-      :disabled="formAction.formProcess"
-      :loading="formAction.formProcess"
-    >
+    <v-btn class="mt-2" type="submit" color="red-darken-4" prepend-icon="mdi-account-box-edit-outline"
+      :disabled="formAction.formProcess" :loading="formAction.formProcess">
       Update Information
     </v-btn>
   </v-form>
