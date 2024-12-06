@@ -43,7 +43,7 @@ const onFormSubmit = () => {
     refVForm.value?.validate().then(({ valid }) => {
         if (valid) {
             isOpen.value = false
-            emit('formSubmitted', { ...formData.value, reportType: props.reportType })
+            emit('formSubmitted', { ...formData.value, reportType: props.reportType, prescribedPeriod: props.prescribedPeriod })
         }
         else formAction.value = {
             ...formActionDefault,
@@ -68,10 +68,9 @@ onMounted(() => {
                 <v-form ref="refVForm" @submit.prevent="onFormSubmit">
                     <v-row dense>
                         <v-col>
-                            <v-text-field readonly v-model="props.prescribedPeriod" label="Prescribed Period"
-                                :rule="requiredValidator"></v-text-field>
+                            <v-text-field readonly v-model="props.prescribedPeriod.prescribedPeriodValue"
+                                label="Prescribed Period" :rule="requiredValidator"></v-text-field>
                         </v-col>
-
                     </v-row>
                     <v-row>
                         <v-col>

@@ -149,7 +149,7 @@ onMounted(async () => {
             <v-col v-for="(value, key) in prescribedPeriodValues">
               <ScoreboardFormDialog @form-submitted="handleDialogFormSubmit"
                 :reportType="{ report_name: value.report.report_name, report_id: value.report.report_id }"
-                :prescribedPeriod="value.prescribed_period_value"
+                :prescribedPeriod="{ prescribedPeriodValue: value.prescribed_period_value, prescribedPeriodId: value.prescribed_periods_id }"
                 :dateTimeForwarded="value.report.date_time_forwarded_to" />
             </v-col>
           </v-row>

@@ -16,8 +16,12 @@ const tableOptions = ref({
 const scoreboardStore = useScoreboardStore()
 const onLoadItems = async ({ page, itemsPerPage, sortBy }) => {
 
-  scoreboardStore.getScoreboardPaginated({ currentPage: 1, perPage: 10, column: "" })
+  tableOptions.value.isLoading = true
+
   //load the items here by calling the api
+  await scoreboardStore.getScoreboardPaginated({ currentPage: 1, perPage: 10, column: "" })
+
+  tableOptions.value.isLoading = false
 
 } 
 </script>
@@ -30,8 +34,9 @@ const onLoadItems = async ({ page, itemsPerPage, sortBy }) => {
     </template>
     <template #content>
       <v-data-table-server v-model:items-per-page="tableOptions.itemsPerPage" v-model:page="tableOptions.page"
-        v-model:sort-by="tableOptions.sortBy" :loading="tableOptions.isLoading" :headers="scoreboardtableHeaders"
-        :items-length="scoreboardStore.scoreboardTotal" @update:options="onLoadItems">
+        v-model:sort-by="tableOptions.sortBy" :loading="tableOptions.isLoading" :headers="scoreboardTableHeaders"
+        :items="scoreboardStore.scoreboardTable" :items-length="scoreboardStore.scoreboardTotal"
+        @update:options="onLoadItems" :headers-props.width="130">
 
       </v-data-table-server>
     </template>

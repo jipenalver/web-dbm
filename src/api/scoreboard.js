@@ -16,12 +16,12 @@ const fetchTypeOfTransactionList = async (prescribedPeriod = false) => {
     const { data: typeOfTransactionResult, error } = await supabase
       .from('type_of_transactions')
       .select(
-        'transaction_type, prescribed_periods(prescribed_period_value, report:reports(report_id, report_name, date_time_forwarded_to))'
+        'transaction_type, prescribed_periods(prescribed_periods_id, prescribed_period_value, report:reports(report_id, report_name, date_time_forwarded_to))'
       )
     if (error) {
       throw new Error(error)
     }
-    console.log(typeOfTransactionResult)
+    console.log('result from fetching type of transactions', typeOfTransactionResult)
     return typeOfTransactionResult
   }
 
@@ -109,7 +109,8 @@ export const insertScoreboardData = async (formData) => {
       report_id: reportItem.reportType.report_id,
       scoreboard_id: data[0].scoreboard_id,
       date_time_forwarded: combinedDateTime,
-      num_working_time: reportItem.numWorkingDays
+      num_working_time: reportItem.numWorkingDays,
+      prescribed_period_id: reportItem.prescribedPeriod.prescribedPeriodId
     }
   })
   const { reportError } = await supabase.from('report_records').insert(transformedReportData)
