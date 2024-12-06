@@ -6,6 +6,7 @@ import { useDate } from 'vuetify'
 import { fetchScoreboardOptions, insertScoreboardData } from '@/api/scoreboard'
 import { formActionDefault } from '@/utils/supabase.js'
 import ScoreboardFormDialog from "@/components/system/scoreboard/ScoreboardFormDialog.vue"
+import SideNavigation from '@/components/layout/navigation/SideNavigation.vue'
 
 const reports = ['OPAR', 'DPAR', 'IPAR', 'Asst. DC/Sr. BMS']
 const options = ref({})
@@ -58,13 +59,14 @@ const handleDialogFormSubmit = (formDialogData) => {
 }
 
 const handleFormSubmit = async () => {
-  console.log("Form submitted");
+  formAction.value.formProcess = true
 
   //i have to manually unwraped the proxied nested objects in these ref (will ask for suggestions)
   const { data, error } = await insertScoreboardData({ ...formData.value, particulars: { ...formData.value.particulars }, reportsData: [...formData.value.reportsData] })
   if (error) {
     console.log("Error inserting data into scoreboard")
   }
+  formAction.value.formProcess = false
 
 }
 onMounted(async () => {
@@ -83,6 +85,9 @@ onMounted(async () => {
 
 <template>
   <AppLayout>
+    <template #navigation>
+      <SideNavigation :is-drawer-visible="isDrawerVisible"></SideNavigation>
+    </template>
     <template #content>
       <v-container>
         <v-form ref="formVRef" @submit.prevent="handleFormSubmit">
@@ -171,7 +176,11 @@ onMounted(async () => {
               </v-text-field>
             </v-col>
           </v-row>
-          <v-btn text="Submit Form" type="submit"></v-btn>
+          <v-row dense>
+            <v-spacer></v-spacer>
+            <v-btn text="Submit Form" type="submit" color="red-darken-4" :loading="formAction.formProcess"
+              :disabled="formAction.formProcess"></v-btn>
+          </v-row>
         </v-form>
       </v-container>
     </template>

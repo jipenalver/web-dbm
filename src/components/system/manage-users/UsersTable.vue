@@ -87,36 +87,21 @@ const onLoadItems = async ({ page, itemsPerPage, sortBy }) => {
 </script>
 
 <template>
-  <AlertNotification
-    :form-success-message="formAction.formSuccessMessage"
-    :form-error-message="formAction.formErrorMessage"
-  ></AlertNotification>
+  <AlertNotification :form-success-message="formAction.formSuccessMessage"
+    :form-error-message="formAction.formErrorMessage"></AlertNotification>
 
   <v-row>
     <v-col cols="12">
       <!-- eslint-disable vue/valid-v-slot -->
-      <v-data-table-server
-        v-model:items-per-page="tableOptions.itemsPerPage"
-        v-model:page="tableOptions.page"
-        v-model:sort-by="tableOptions.sortBy"
-        :loading="tableOptions.isLoading"
-        :headers="tableHeaders"
-        :items="usersStore.usersTable"
-        :items-length="usersStore.usersTotal"
-        @update:options="onLoadItems"
-      >
+      <v-data-table-server v-model:items-per-page="tableOptions.itemsPerPage" v-model:page="tableOptions.page"
+        v-model:sort-by="tableOptions.sortBy" :loading="tableOptions.isLoading" :headers="tableHeaders"
+        :items="usersStore.usersTable" :items-length="usersStore.usersTotal" @update:options="onLoadItems">
         <template #top>
           <v-row dense>
             <v-spacer></v-spacer>
 
             <v-col cols="12" md="3">
-              <v-btn
-                class="my-1"
-                prepend-icon="mdi-account-plus"
-                color="red-darken-4"
-                block
-                @click="onAdd"
-              >
+              <v-btn class="my-1" prepend-icon="mdi-account-plus" color="red-darken-4" block @click="onAdd">
                 Add User
               </v-btn>
             </v-col>
@@ -152,13 +137,8 @@ const onLoadItems = async ({ page, itemsPerPage, sortBy }) => {
               <v-tooltip activator="parent" location="top">Edit User</v-tooltip>
             </v-btn>
 
-            <v-btn
-              variant="text"
-              density="comfortable"
-              :disabled="item.user_metadata.is_admin"
-              @click="onDelete(item.id)"
-              icon
-            >
+            <v-btn variant="text" density="comfortable" :disabled="item.user_metadata.is_admin"
+              @click="onDelete(item.id)" icon>
               <v-icon icon="mdi-trash-can" color="red-darken-4"></v-icon>
               <v-tooltip activator="parent" location="top">Delete User</v-tooltip>
             </v-btn>
@@ -168,16 +148,9 @@ const onLoadItems = async ({ page, itemsPerPage, sortBy }) => {
     </v-col>
   </v-row>
 
-  <UsersFormDialog
-    v-model:is-dialog-visible="isDialogVisible"
-    :item-data="itemData"
-    :table-options="tableOptions"
-  ></UsersFormDialog>
+  <UsersFormDialog v-model:is-dialog-visible="isDialogVisible" :item-data="itemData" :table-options="tableOptions">
+  </UsersFormDialog>
 
-  <ConfirmDialog
-    v-model:is-dialog-visible="isConfirmDeleteDialog"
-    title="Confirm Delete"
-    text="Are you sure you want to delete user?"
-    @confirm="onConfirmDelete"
-  ></ConfirmDialog>
+  <ConfirmDialog v-model:is-dialog-visible="isConfirmDeleteDialog" title="Confirm Delete"
+    text="Are you sure you want to delete user?" @confirm="onConfirmDelete"></ConfirmDialog>
 </template>

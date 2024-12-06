@@ -73,7 +73,11 @@ export const fetchScoreboardOptions = async () => {
 
 //this calls a lot of supabase trip bc I did not store the ids of these foreign values for scoreboard
 export const insertScoreboardData = async (formData) => {
-  console.log(formData)
+  //testing the loading and disabling
+  await new Promise((resolve) => {
+    setTimeout(resolve, 3000)
+  })
+
   const { reportsData, ...extractedFormData } = formData
 
   //setting timestamp, combining selected date and time
