@@ -1,5 +1,5 @@
 <script setup>
-import ProfileHeaderNavigation from './ProfileHeaderNavigation.vue'
+import TopProfileNavigation from './navigation/TopProfileNavigation.vue'
 import { useAuthUserStore } from '@/stores/authUser'
 import { useDisplay } from 'vuetify'
 import { onMounted, ref } from 'vue'
@@ -66,7 +66,7 @@ onMounted(() => {
             @click="onToggleTheme"
           ></v-btn>
 
-          <ProfileHeaderNavigation v-if="isLoggedIn"></ProfileHeaderNavigation>
+          <TopProfileNavigation v-if="isLoggedIn"></TopProfileNavigation>
         </v-app-bar>
 
         <slot name="navigation"></slot>
